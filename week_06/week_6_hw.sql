@@ -20,17 +20,18 @@ where return_date between '2005-05-28' and '2005-06-01'
 
 
 --3.	How would you determine which movies are rented the most?
+--join film and inventory using film id and rental on inventory id. select the count of rows in film as well as the title 
+-- and film id. 
+group by film_id and order from largest to smallest by doing count(*) desc
 
--- join rental and film on the inventory id and film id. Select title from 
---film, and count on the rental date - assuming that each rental date was a new 
---instance of it being rented so it can be considered counting how many times it has 
---been rented. 
---group by title and then order by the count of times rented descending
-select  f.title, count(rental_date) as times_rented
-from rental r, film  f
-where r.inventory_id = f.film_id
-group by  f.title
-order by times_rented desc
+select count(*), f.title, f.film_id
+from film f
+join inventory i
+on i.film_id = f.film_id
+join rental r
+on r.inventory_id = i.inventory_id
+group by f.film_id
+order by count(*) desc
 
 
 
@@ -73,13 +74,52 @@ order by 3 desc;
 
 
 --6.	Write an explain plan for 4 and 5. Show the queries and explain what is happening in each one. Use the following link to understand how this works http://postgresguide.com/performance/explain.html 
+--What is happening in each one? They show what the estimated cost is for setting up the run and including it and how many rows are estimated to be returned. It also shows the actual numbers*/
 
---For 4 - concat first name from customer and last name from customer, get the customer id from customer, and sum the payment amount as total. 
---Join customer and payment on customer_id and group them by concat name and customer id. Order by total
+--For 4 
+ 	
+explain select c.first_name || ' ' ||c.last_name as name, c.customer_id, sum(p.amount) as total
+from customer c, payment p
+where c.customer_id = p.customer_id
+group by name, c.customer_id
+order by total 
+"Sort  (cost=535.58..537.08 rows=599 width=68)"
+"  Sort Key: (sum(p.amount))"
+"  ->  HashAggregate  (cost=497.47..507.95 rows=599 width=68)"
+"        Group Key: (((c.first_name)::text || ' '::text) || (c.last_name)::text), c.customer_id"
+"        ->  Hash Join  (cost=22.48..388.00 rows=14596 width=42)"
+"              Hash Cond: (p.customer_id = c.customer_id)"
+"              ->  Seq Scan on payment p  (cost=0.00..253.96 rows=14596 width=8)"
+"              ->  Hash  (cost=14.99..14.99 rows=599 width=17)"
+"                    ->  Seq Scan on customer c  (cost=0.00..14.99 rows=599 width=17)"
+
+
+
+
 --For 5 -- 
-	--Select actor id from actor, concat first and last name from actor name, get count of film id from film. Join film ids for film and film actor, join 
-	--film actor actor id with actor actor id and set release year to 2009. Group by actor id and name and order by film count. 
+explain select a.actor_id,  a.first_name || ' '|| a.last_name as actor_name, count(f.film_id) as film_count
+from film f, actor a, film_actor fa
+where f.film_id = fa.film_id
+and fa.actor_id = a.actor_id
+and f.release_year = 2006
+group by  a.actor_id, actor_name
+order by 3 desc;
 
+
+"Sort  (cost=278.07..278.57 rows=200 width=44)"
+"  Sort Key: (count(f.film_id)) DESC"
+"  ->  HashAggregate  (cost=267.43..270.43 rows=200 width=44)"
+"        Group Key: a.actor_id, (((a.first_name)::text || ' '::text) || (a.last_name)::text)"
+"        ->  Hash Join  (cost=85.50..226.46 rows=5462 width=40)"
+"              Hash Cond: (fa.actor_id = a.actor_id)"
+"              ->  Hash Join  (cost=79.00..178.01 rows=5462 width=6)"
+"                    Hash Cond: (fa.film_id = f.film_id)"
+"                    ->  Seq Scan on film_actor fa  (cost=0.00..84.62 rows=5462 width=4)"
+"                    ->  Hash  (cost=66.50..66.50 rows=1000 width=4)"
+"                          ->  Seq Scan on film f  (cost=0.00..66.50 rows=1000 width=4)"
+"                                Filter: ((release_year)::integer = 2006)"
+"              ->  Hash  (cost=4.00..4.00 rows=200 width=17)"
+"                    ->  Seq Scan on actor a  (cost=0.00..4.00 rows=200 width=17)"
 
 --7.	What is the average rental rate per genre?
 --Relevant data is in film, film_category, and category tables. We alias category's name column as genre. We need to cast 
