@@ -9,16 +9,16 @@
     
     Navigate to terminal 
    
-   ![https://github.com/SharonBond/homework/blob/main/week_20_final/new%20terminal.png]
+   ![terminal](https://github.com/SharonBond/homework/blob/main/week_20_final/new%20terminal.png)
    
    This will open up a new terminal. 
    
    Hit the arrow to run 
-   ![https://github.com/SharonBond/homework/blob/main/week_20_final/run.png]
+   ![arrow](https://github.com/SharonBond/homework/blob/main/week_20_final/run.png)
    
    Code will run 
    
-   ![https://github.com/SharonBond/homework/blob/main/week_20_final/run%20vs.png]
+   ![run](https://github.com/SharonBond/homework/blob/main/week_20_final/run%20vs.png)
    
    
 
@@ -28,7 +28,7 @@ Navigate to the correct directory
 
 Use code ./file_name.file_exention. In this case, ./cats.py
 
-![https://github.com/SharonBond/homework/blob/main/week_20_final/run%20git%20bash.PNG]
+![git bash](https://github.com/SharonBond/homework/blob/main/week_20_final/run%20git%20bash.PNG)
 
 
 # Why is this an important exercise? 
