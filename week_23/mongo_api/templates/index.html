@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>TV shows</title>
+</head>
+
+<body>
+  <h5> Thanks Amanda for being such a huge resource during the in class assignments! </h5>
+  <p></p>
+  <div class="container">
+    <div class="jumbotron text-center">
+        <a href='/add'><button>To add a new record</button></a>
+        <a href='/update'><button>To update an existing record</button></a>
+        <a href='/delete'><button>To delete an existing record</button></a>
+        <a href='/'><button>To see all records</button></a>
+    </div>
+  <div class="container">
+    {% for item in data %}
+    
+    <div>
+             
+              <h4>{{ item.name }}</h4>
+              <h4>Number of Seasons: {{ item.seasons }}</h4>
+              <h4>Show Duration: {{ item.duration }}</h4>
+              <h4>Year: {{ item.year }}</h4>
+              <p>-------------------------</p>
+  
+      </div>
+      {% endfor %}
+  </div>
+</body>
+
+</html>
